@@ -9,6 +9,7 @@ $(window).resize(function() {
 	}
 });
 (function($) {
+//	打字
 	$.fn.typewriter = function() {
 		this.each(function() {
 			var $ele = $(this),
@@ -32,6 +33,7 @@ $(window).resize(function() {
 	};
 })(jQuery);
 
+//日期
 function timeElapse(date) {
 	var current = Date();
 	var seconds = (Date.parse(current) - Date.parse(date)) / 1000;

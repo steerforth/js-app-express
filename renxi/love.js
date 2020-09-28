@@ -47,6 +47,7 @@
 			return p;
 		}
 	}
+	//爱心形状
 	Heart = function() {
 		var points = [],
 			x, y, t;
@@ -64,6 +65,7 @@
 			return this.points[i].mul(scale || 1);
 		}
 	}
+	//首页的单爱心和文字
 	Seed = function(tree, point, scale, color) {
 		this.tree = tree;
 		var scale = scale || 1
@@ -212,6 +214,7 @@
 			}
 		}
 	}
+	//树
 	Tree = function(canvas, width, height, opt) {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext('2d');
@@ -405,6 +408,7 @@
 			}
 		}
 	}
+//	树枝
 	Branch = function(tree, point1, point2, point3, radius, length, branchs) {
 		this.tree = tree;
 		this.point1 = point1;
@@ -445,6 +449,7 @@
 			ctx.restore();
 		}
 	}
+	//树上的花
 	Bloom = function(tree, point, figure, color, alpha, angle, scale, place, speed) {
 		this.tree = tree;
 		this.point = point;

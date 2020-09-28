@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="https://cdn.bootcss.com/qs/6.7.0/qs.min.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	</head>
+	<body>
+		<form>
+			<input id='file0' type="file" name="file" />
+		</form>
+	</body>
+	<script>
+		window.onload = function() {
+			// onDownloadProgress: function (progressEvent) {
+			//     // 对原生进度事件的处理
+			//   },
+			var qs = Qs;
+
+			const request = axios.create({
+				baseURL: 'http://localhost:8080',
+				timeout: 5000,
+				// headers: {
+				// 	'zhile-cod-token': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMCIsImlzcyI6ImNvbS56aGlsZS53eGZvcndhcmQiLCJpYXQiOjE1OTgxNTg0NTIsImV4cCI6MTU5ODE2NTY1Mn0.FIIUrk0fN7sctXFwmOznpwBMvOcgsAyntSWVUl8ey7SxHEe9XFuMxREQ6PpLMyms3WB-kjjj2e4EXlQd9-xIZA'
+				// }
+			});
+
+			request.interceptors.request.use(
+				config => {
+					config.headers['zhile-cod-token'] =
+						'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMCIsImlzcyI6ImNvbS56aGlsZS53eGZvcndhcmQiLCJpYXQiOjE1OTgxNjk5NDksImV4cCI6MTU5ODE3NzE0OX0.xL4XZxoFsX8Tt8b_gZmNoHGWaVpPLqO0XQuVImV3sXRVe1IxCfvDr6FyXcf7BTntS6kvJ2AosNCkT5KLr0ncpw'
+					return config
+				},
+				error => {
+					console.log(error) // for debug
+					return Promise.reject(error)
+				}
+			)
+
+			request.interceptors.response.use(
+				response => {
+					debugger
+					//大文件下载反馈
+					if(response.config.responseType === 'blob'){
+						return response.data;
+					}
+					const res = response.data
+					if (!res.success) {
+						debugger
+						return Promise.reject(new Error(res.errMsg || 'Error'))
+					} else {
+						return res
+					}
+				},
+				error => {
+					console.log('err' + error) // for debug
+					return Promise.reject(error)
+				}
+			)
+			//一、GET请求
+			//1.无参数
+			// request({
+			// 	url: '/account/hi',
+			// 	method: 'get',
+			// 	// data
+			// }).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+			//2.参数会拼接在url上
+			// let data = {
+			// 	level: 'INFO',
+			// 	path: 'com.zhile.account'
+			// };
+			// request.get('/log/',{params:data}).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+			// request({
+			// 	url: '/log/',
+			// 	method: 'get',
+			// 	params:data
+			// }).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+			//二、POST请求
+			//1.参数在url上
+			// let data2 = {
+			// 	mobile:18767117431,
+			// 	pwd:'123456'
+			// }
+			// request.post('/user/login',null,{params:data2}).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});	
+			// request({
+			// 	url: '/user/login',
+			// 	method: 'post',
+			// 	params:data2
+			// }).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+			//1.2参数包含数组
+			// var data3 = {
+			// 	start:'2020-08-01',
+			// 	end:'2020-08-05',
+			// 	shopIds:[1,2,3],
+			// 	targetMarket:'阿联酋'
+			// }
+
+			// request({
+			// 	url: '/order/statistics',
+			// 	method: 'post',
+			// 	params:data3,
+			// 	paramsSerializer: params => {
+			// 	 return qs.stringify(params, { indices: false })
+			//     },
+			// }).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+			// request.post('/order/statistics',null,
+			// 	{
+			// 		params:data3,
+			// 		paramsSerializer: params => {
+			// 			return qs.stringify(params, { indices: false })
+			// 		},
+			// 	}).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+			//2.参数在请求体里
+
+			// request.post('/goods/updateGoods',{name:'nihao',sku:'A101'}).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+			//3.参数在Url和请求体中, 请求体包含数组
+			// request.post('/stock/upload/imile-arrived-records',[{id:1,planItemId:1},{id:2,planItemId:2}],{
+			// 	params:{
+			// 		arriveDateStr:'2020-08-01',
+			// 	},
+			// 	paramsSerializer: params => {
+			// 		return qs.stringify(params, { indices: false })
+			// 	},
+			// }).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+
+			//4.form表单提交  本质就是application/x-www-form-urlencoded
+			// request.post('/goodsSku/update',null,{
+			// 		params:{
+			// 			sku:'A101',
+			// 			name:'哈哈哈'
+			// 		},
+			// 		//没有数组可以不写
+			// 		// paramsSerializer: params => {
+			// 		// 	return qs.stringify(params, { indices: false })
+			// 		// },
+			// 	}).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+
+			//5.文件上传
+			// var fileInput = document.querySelector('#file0');
+			// fileInput.onchange = function() {
+			// 	var f = document.querySelector('#file0');
+			// 	var formData = new FormData();
+			// 	formData.append("file", f.files[0]);
+			// 	request.post('/resend/file/upload/tempstorage', formData, {
+			// 		'Content-Type': 'multipart/form-data'
+			// 	}).then(
+			// 		res => {
+			// 			debugger
+			// 			console.log(res)
+			// 		},
+			// 		err => {
+			// 			debugger
+			// 			console.log(err)
+			// 		});
+			// }
+			
+			//6.文件下载
+			// window.open('http://localhost:8080/resend/file/download?fileId=8304');
+			// request.post('/resend/file/download',null,{
+			// 	params:{
+			// 		fileId:8304
+			// 	},
+			// 	responseType: 'blob'
+			// }).then(
+			// 	res => {
+			// 		debugger
+			// 		console.log(res)
+			// 		let fileName = '111';
+			// 		if (typeof window.navigator.msSaveBlob !== 'undefined') {
+			// 		  window.navigator.msSaveBlob(new Blob([res.data]), fileName+'.xlsx')
+			// 		}else{
+			// 		  let url = window.URL.createObjectURL(new Blob([res.data],{type: "application/vnd.ms-excel;charset=utf-8"}))
+			// 		  let link = document.createElement('a')
+			// 		  // link.style.display = 'none'
+			// 		  let test = url.substring(5,url.length);
+			// 		  link.href = url;
+			// 		  console.log(url+"----"+test)
+			// 		  link.innerText = '点击我哦';
+			// 		  link.setAttribute('download', fileName+'.xlsx')
+			// 		  document.body.appendChild(link)
+			// 		  link.click()
+			// 		  // document.body.removeChild(link); //下载完成移除元素
+			// 		  // window.URL.revokeObjectURL(url); //释放掉blob对象
+			// 		}
+				
+
+			// 	},
+			// 	err => {
+			// 		debugger
+			// 		console.log(err)
+			// 	});
+				
+				
+				request.get('https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1598190214&di=6ac8f24af1f731eae723c8c139c524d4&src=http://a3.att.hudong.com/14/75/01300000164186121366756803686.jpg',{
+					responseType: 'blob'
+				}).then(
+					res => {
+						debugger
+						console.log(res)
+						let fileName = '111';
+						if (typeof window.navigator.msSaveBlob !== 'undefined') {
+						  window.navigator.msSaveBlob(new Blob([res.data]), fileName+'.xlsx')
+						}else{
+						  let url = window.URL.createObjectURL(new Blob([res.data]))
+						  let link = document.createElement('a')
+						  // link.style.display = 'none'
+						  let test = url.substring(5,url.length);
+						  link.href = url;
+						  console.log(url+"----"+test)
+						  link.innerText = '点击我哦';
+						  link.setAttribute('download', fileName+'.jpg')
+						  document.body.appendChild(link)
+						  link.click()
+						  // document.body.removeChild(link); //下载完成移除元素
+						  // window.URL.revokeObjectURL(url); //释放掉blob对象
+						}
+					
+				
+					},
+					err => {
+						debugger
+						console.log(err)
+					});
+			
+
+		}
+	</script>
+</html>

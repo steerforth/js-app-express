@@ -26,6 +26,8 @@ $(window).resize(function() {
 				$ele.html(str.substring(0, progress) + (progress & 1 ? '_' : ''));
 				if(progress >= str.length) {
 					clearInterval(timer);
+					//字体跳动
+					$('#jump').beatText({isAuth:true,beatHeight:"1em",isRotate:false,upTime:300,downTime:300});
 				}
 			}, 150);
 		});

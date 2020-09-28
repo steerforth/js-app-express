@@ -1,6 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>来自他的一份情书</title>
+<link rel="shortcut icon" href="./renxi/favicon.ico" />
+<link type="text/css" rel="stylesheet" href="./jumpfont/jump.css">
 <link type="text/css" rel="stylesheet" href="./renxi/default.css">
 <script type="text/javascript" src="./renxi/jquery.min.js"></script>
 <script type="text/javascript" src="./renxi/jscex.min.js"></script>
@@ -11,19 +13,15 @@
 <script type="text/javascript" src="./renxi/jscex-async-powerpack.min.js"></script>
 <script type="text/javascript" src="./renxi/functions.js" charset="utf-8"></script>
 <script type="text/javascript" src="./renxi/love.js" charset="utf-8"></script>
-<style type="text/css">
+<script type="text/javascript" src="./jumpfont/jquery.beattext.js"></script>
+<script type="text/javascript" src="./jumpfont/easying.js"></script>
+	<!--<script src="cursor/bubbleCursor.js" type="text/javascript"></script>-->
 
-<!--
-
-.STYLE1 {color: #666666}
-
--->
-
-        </style>
 </head>
 <body>
-<audio autoplay="autopaly">
-<source src="renxi.mp3" type="audio/mp3" />
+<audio id="mp3" autoplay="autoplay" loop="loop">
+<source src="renxi/bg2.mp3" type="audio/mp3" />
+您的浏览器无法播放音乐
 </audio>
 <div id="main">
 <div id="error">本页面采用HTML5编辑，目前您的浏览器无法显示，请换成谷歌(<a href="http://www.google.cn/chrome/intl/zh-CN/landing_chrome.html?hl=zh-CN&brand=CHMI">Chrome</a>)或者火狐(<a href="http://firefox.com.cn/download/">Firefox</a>)浏览器，或者其他游览器的最新版本。</div>
@@ -39,12 +37,12 @@
 <span class="say">因为我太啰嗦了，所以你离开了我</span><br>
 <span class="say">虽然你看不见我的告白，但是我还是要把这些心里话说出来</span><br>
 <span class="say"> </span><br>
-<span class="say"><span class="space"></span> -- 爱你的小凯同学--</span>
+<span class="say"><span class="space"></span> -- 爱你的<span id="jump">小凯同学</span>--</span>
 </font></p>
 </div>
 </div>
 <div id="clock-box">
-<span class="STYLE1"></span><font color="#33CC00">亲爱的33，我们相识</font>
+<span class="STYLE1"></span><font color="#FFD700">亲爱的33，我们相识</font>
 <span class="STYLE1">已经是……</span>
 <div id="clock"></div>
 </div>
@@ -57,10 +55,9 @@
 <script>
 
     (function(){
-
+		
         var canvas = $('#canvas');
 
-		
 
         if (!canvas[0].getContext) {
 
@@ -86,7 +83,7 @@
 
                 color: "rgb(190, 26, 37)",
 
-                scale: 2
+                scale: 3
 
             },
 
@@ -155,6 +152,7 @@
         var seed = tree.seed;
 
         var foot = tree.footer;
+        //阻塞变量
 
         var hold = 1;
 
@@ -169,6 +167,13 @@
             y = e.pageY - offset.top;
 
             if (seed.hover(x, y)) {
+            	
+            		var music = document.getElementById("mp3");
+	            if (music.paused) { //判读是否播放  
+	                music.paused=false;
+	                music.play(); //没有就播放 
+	            } 
+	
 
                 hold = 0; 
 
@@ -195,13 +200,13 @@
 
 
         var seedAnimate = eval(Jscex.compile("async", function () {
+        		//单红色爱心
 
             seed.draw();
 
             while (hold) {
 
                 $await(Jscex.Async.sleep(10));
-
             }
 
             while (seed.canScale()) {
@@ -230,7 +235,7 @@
 
             do {
 
-    	        tree.grow();
+    	        		tree.grow();
 
                 $await(Jscex.Async.sleep(10));
 
@@ -244,7 +249,7 @@
 
             do {
 
-    	        tree.flower(2);
+    	        		tree.flower(2);
 
                 $await(Jscex.Async.sleep(10));
 
@@ -273,6 +278,7 @@
 
 
             // 会有闪烁不得意这样做, (＞﹏＜)
+            //画出的树转为背景图
 
             canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
 
@@ -283,27 +289,6 @@
             canvas.css("background", "none");
 
         }));
-
-
-
-        var jumpAnimate = eval(Jscex.compile("async", function () {
-
-            var ctx = tree.ctx;
-
-            while (true) {
-
-                tree.ctx.clearRect(0, 0, width, height);
-
-                tree.jump();
-
-                foot.draw();
-
-                $await(Jscex.Async.sleep(25));
-
-            }
-
-        }));
-
 
 
         var textAnimate = eval(Jscex.compile("async", function () {
@@ -322,29 +307,48 @@
             }
 
         }));
+        
+        
+        var jumpAnimate = eval(Jscex.compile("async", function () {
 
+            var ctx = tree.ctx;
+
+            while (true) {
+
+                tree.ctx.clearRect(0, 0, width, height);
+                
+                tree.jump();
+
+                foot.draw();
+
+                $await(Jscex.Async.sleep(25));
+
+            }
+
+        }));
 
 
         var runAsync = eval(Jscex.compile("async", function () {
+        		//单爱心，并阻塞，监听点击事件
 
             $await(seedAnimate());
+            //树枝成长
 
             $await(growAnimate());
+            //生花瓣
 
             $await(flowAnimate());
+            //树右移
 
             $await(moveAnimate());
-
-
+			//文字和时间
 
             textAnimate().start();
-
-
+			//花瓣飘洒
 
             $await(jumpAnimate());
 
         }));
-
 
 
         runAsync().start();
